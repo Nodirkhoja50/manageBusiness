@@ -22,7 +22,7 @@ class Command(BaseCommand):
     reply_message_id = 0
     def handle(self, *args,**options):
             
-                    bot = Bot(token=API_TOKEN)
+                    bot = Bot(token=API_TOKEN,proxy="http://proxy.server:3128")
 
                     # For example use simple MemoryStorage for Dispatcher.
                     storage = MemoryStorage()

@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-#03afot_$#&1mb_!2v5(!qoj3h#=)a^$l69b2(vegw51qc628-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -76,14 +76,11 @@ WSGI_APPLICATION = 'PastelBot.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'railway',
-        'USER': 'postgres',
-        'PASSWORD': 'L9PrYld4wexlGeeJ1DsK',
-        'HOST': 'containers-us-west-26.railway.app',
-        'PORT': '7400',
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
 
 
 # Password validation

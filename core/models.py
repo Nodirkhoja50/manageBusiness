@@ -45,6 +45,9 @@ class Rulon(models.Model):
         return file
     
 
+    
+
+
 class Price(models.Model):
     price_big = models.CharField(max_length=50)
     price_small = models.CharField(max_length=50)

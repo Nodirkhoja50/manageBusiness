@@ -17,13 +17,13 @@ logging.basicConfig(level=logging.INFO)
 
 
 API_TOKEN = '6133087058:AAGBZySk9p_mPZWDH4T2aSyRzgF56fwYWA4'
-list_users = [5334048344]
+list_users = [5334048344,641437735,762928595,53233766]
 class Command(BaseCommand):
     reply_message_id = 0
     def handle(self, *args,**options):
         
         bot = Bot(token=API_TOKEN)
-
+        
         # For example use simple MemoryStorage for Dispatcher.
         storage = MemoryStorage()
         dp = Dispatcher(bot, storage=storage)

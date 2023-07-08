@@ -41,7 +41,6 @@ class Rulon(models.Model):
         pdf.output(file_path)
         
         file = File(open(file_path, 'rb'))
-        #file.close()
         return file
     
 

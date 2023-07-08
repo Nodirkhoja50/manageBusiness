@@ -14,57 +14,61 @@ from .save import save_obj
 from ...models import Rulon
 from django.core.management.base import BaseCommand
 logging.basicConfig(level=logging.INFO)
-
+from .check_user import check_user
 
 API_TOKEN = '6133087058:AAGBZySk9p_mPZWDH4T2aSyRzgF56fwYWA4'
 list_users = [5334048344,641437735,762928595,53233766]
 class Command(BaseCommand):
     reply_message_id = 0
     def handle(self, *args,**options):
-        
-        bot = Bot(token=API_TOKEN)
-        
-        # For example use simple MemoryStorage for Dispatcher.
-        storage = MemoryStorage()
-        dp = Dispatcher(bot, storage=storage)
-
-
-        # States
-        class Form(StatesGroup):
-            big_pastel = State()  # Will be represented in storage as 'Form:big_pastel'
-            small_pastel = State()  # Will be represented in storage as 'Form:small_pastel'
-            nalichka = State()  # Will be represented in storage as 'Form:nalichka'
-            gastiniy = State()
-        
-
-        class RulonState(StatesGroup):
-            agree = State()
-            rulon = State()
             
+                    bot = Bot(token=API_TOKEN)
 
-        try:
+                    # For example use simple MemoryStorage for Dispatcher.
+                    storage = MemoryStorage()
+                    dp = Dispatcher(bot, storage=storage)
 
 
-            @dp.message_handler(commands='start')
-            async def cmd_start(message: types.Message):
-                """
-                Conversation's entry point
-                """
-                
-                if message.chat.id not in list_users:
-                    await message.answer("Sizga kirish taqiqlangan!")
-                    return
-                else:
-                    await message.reply("Iltimos tugmalardan birni tanglang?",reply_markup=button)
+                    # States
+                    class Form(StatesGroup):
+                        big_pastel = State()  # Will be represented in storage as 'Form:big_pastel'
+                        small_pastel = State()  # Will be represented in storage as 'Form:small_pastel'
+                        nalichka = State()  # Will be represented in storage as 'Form:nalichka'
+                        gastiniy = State()
                     
+
+                    class RulonState(StatesGroup):
+                        agree = State()
+                        rulon = State()
+                
+
+        
+
+                    
+                    @dp.message_handler(commands='start')
+                    async def cmd_start(message: types.Message):
+                        """
+                        Conversation's entry point
+                        """
+                    
+                        
+                        if message.chat.id not in list_users:
+                            await message.answer("Sizga kirish taqiqlangan!")
+                            
+                        else:
+                            await message.reply("Iltimos tugmalardan birni tanglang?",reply_markup=button)
+
             #RULON
                     @dp.message_handler(Text(startswith='Rulon'))
                     async def cmd_start(message: types.Message):
-                        await RulonState.agree.set()
-                        markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
-                        markup.add("Xa", "Bekor Qilish")
-                        await message.reply('Eski rulon tugadimi?',reply_markup=markup)
-
+                        if check_user(message.chat.id):
+                            await RulonState.agree.set()
+                            markup = types.ReplyKeyboardMarkup(resize_keyboard=True, selective=True)
+                            markup.add("Xa", "Bekor Qilish")
+                            await message.reply('Eski rulon tugadimi?',reply_markup=markup)
+                        else:
+                            await message.reply('Sizga kirish taqiqlangan')
+                            return
 
             #BEKOR QILISH
                     @dp.message_handler(Text(startswith='Bekor Qilish'),state='*')
@@ -126,22 +130,26 @@ class Command(BaseCommand):
             #XISOBOT
                     @dp.message_handler(Text(startswith='Xisobot'))
                     async def cmd_start(message: types.Message):
-
-                        latest_rulon = Rulon.objects.last().information_pastel.path
-                        with open(latest_rulon, "rb") as file:
-                            document = types.InputFile(file)
-                            await bot.send_document(message.chat.id,document)
-
+                        if check_user(message.chat.id):
+                            latest_rulon = Rulon.objects.last().information_pastel.path
+                            with open(latest_rulon, "rb") as file:
+                                document = types.InputFile(file)
+                                await bot.send_document(message.chat.id,document)
+                        else:
+                            await message.reply('Sizga kirish taqiqlangan')
+                            return
 
             #PASTEL
                     @dp.message_handler(Text(startswith='Pastel'))
                     async def cmd_start(message: types.Message):
-                    
+                        if check_user(message.chat.id):
                         # Set state
-                        await Form.big_pastel.set()
-                        reply_message = await message.reply(md.text("kotta pastel sonini kirting",md.bold("faqat son")),reply_markup=bkr_qilish)
-                        self.reply_message_id = reply_message.message_id
-                    
+                            await Form.big_pastel.set()
+                            reply_message = await message.reply(md.text("kotta pastel sonini kirting",md.bold("faqat son")),reply_markup=bkr_qilish)
+                            self.reply_message_id = reply_message.message_id
+                        else:
+                            await message.reply('Sizga kirish taqiqlangan')
+                            return
         
 
 
@@ -250,9 +258,8 @@ class Command(BaseCommand):
                     
                 
             
-            executor.start_polling(dp, skip_updates=True)
-        except:
-            print("Xatolik keti!")
+                    executor.start_polling(dp, skip_updates=True)
+       
 
 a = Command()
 a.handle()

@@ -101,7 +101,7 @@ import PyPDF2
 from fpdf import FPDF
 
 def full_info_pastel(file, sana, katta, kichkina, nalichka, gastiny, jami):
-    extracted_text = f"\n\nsana:{sana}\nkatta:{katta}\nkichkina:{kichkina}\nnalichka:{nalichka}\ngastiny:{gastiny}\nxisob:{jami}"
+    extracted_text = f"\n\nsana:{sana}\nkatta bambuk:{katta}\nkichkina bambuk:{kichkina}\nnalichka:{nalichka}\ngastiny:{gastiny}\nxisob:{jami} sum"
 
     # Check if the file exists
     try:
